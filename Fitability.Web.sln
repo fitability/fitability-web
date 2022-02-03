@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4903AD37-5772-4A89-9117-98A80E2BDA96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fitability_ApiApp", "src\Fitability.ApiApp\Fitability.ApiApp.csproj", "{49A1B3F5-6126-4476-BE81-80DB3E634B66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fitability.WebApp", "src\Fitability.WebApp\Fitability.WebApp.csproj", "{DDCC1F54-757C-48DF-81D5-7FCEFD608E43}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{49A1B3F5-6126-4476-BE81-80DB3E634B66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49A1B3F5-6126-4476-BE81-80DB3E634B66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49A1B3F5-6126-4476-BE81-80DB3E634B66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49A1B3F5-6126-4476-BE81-80DB3E634B66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDCC1F54-757C-48DF-81D5-7FCEFD608E43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDCC1F54-757C-48DF-81D5-7FCEFD608E43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDCC1F54-757C-48DF-81D5-7FCEFD608E43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDCC1F54-757C-48DF-81D5-7FCEFD608E43}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{49A1B3F5-6126-4476-BE81-80DB3E634B66} = {4903AD37-5772-4A89-9117-98A80E2BDA96}
+		{DDCC1F54-757C-48DF-81D5-7FCEFD608E43} = {4903AD37-5772-4A89-9117-98A80E2BDA96}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D2474EC4-6B21-41C7-8B04-305C193ABEDE}
+	EndGlobalSection
+EndGlobal

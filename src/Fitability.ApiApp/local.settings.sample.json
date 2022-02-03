@@ -1,0 +1,12 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+
+    "Users__ApiKey": "<api_key>"
+  },
+  "Host": {
+    "CORS": "*"
+  }
+}
