@@ -40,5 +40,5 @@ jobs:
       api_name: 'Fitability.ApiApp'
       www_location: 'wwwroot'
     secrets:
-      github_token: ${{ secrets.GITHUB_TOKEN }}
+      gh_token: ${{ secrets.GITHUB_TOKEN }}
       aswa_token: '${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_DEV }}'
