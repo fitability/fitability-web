@@ -81,10 +81,10 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ${{ inputs.app_name }}_app
-        path: ${{ inputs.app_name }}/published
+        path: src/${{ inputs.app_name }}/published
 
     - name: Upload ApiApp artifact
       uses: actions/upload-artifact@v2
       with:
         name: ${{ inputs.api_name }}_app
-        path: ${{ inputs.api_name }}/published
+        path: src/${{ inputs.api_name }}/published
