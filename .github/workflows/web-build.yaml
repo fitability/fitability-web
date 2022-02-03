@@ -1,0 +1,44 @@
+name: 'Web App'
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - 'src/**'
+    - 'test/**'
+    - '.github/**'
+
+  pull_request:
+    types:
+    - opened
+    - synchronize
+    - reopened
+    - closed
+    branches:
+    - main
+    paths:
+    - 'src/**'
+    - 'test/**'
+
+jobs:
+  call_dotnet_build:
+    uses: fitability/fitability-web/.github/workflows/dotnet-build.yaml@main
+    with:
+      job_name: 'Web App'
+      environment: 'dev'
+      app_name: 'Fitability.WebApp'
+      api_name: 'Fitability.ApiApp'
+
+  call_dotnet_deploy_dev:
+    uses: fitability/fitability-web/.github/workflows/dotnet-deploy.yaml@main
+    needs: call_dotnet_build
+    with:
+      job_name: 'Web App'
+      environment: 'dev'
+      app_name: 'Fitability.WebApp'
+      api_name: 'Fitability.ApiApp'
+      www_location: 'wwwroot'
+    secrets:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+      aswa_token: '${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_DEV }}'

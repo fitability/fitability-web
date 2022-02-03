@@ -1,0 +1,90 @@
+name: '.NET Build and Test'
+
+on:
+  workflow_call:
+    inputs:
+      job_name:
+        type: string
+        required: true
+      environment:
+        type: string
+        required: true
+      app_name:
+        type: string
+        required: true
+      api_name:
+        type: string
+        required: true
+
+jobs:
+  build_test_analysis:
+    name: ${{ inputs.job_name }}
+
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    steps:
+    - name: Set environment variables
+      shell: bash
+      run: |
+        echo "APP_LOCATION=${{ github.workspace }}/src/${{ inputs.app_name }}" >> $GITHUB_ENV
+        echo "API_LOCATION=${{ github.workspace }}/src/${{ inputs.api_name }}" >> $GITHUB_ENV
+
+    - name: Checkout the repo
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.x'
+
+    - name: Initialise CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: 'csharp'
+
+    - name: Restore NuGet packages
+      shell: bash
+      run: |
+        dotnet restore .
+
+    - name: Build solution
+      shell: bash
+      run: |
+        dotnet build . -c Release
+
+    - name: Test solution
+      shell: bash
+      run: |
+        dotnet test . -c Release
+
+    - name: Perform CodeQL analysis
+      uses: github/codeql-action/analyze@v1
+
+    - name: Create WebApp artifact
+      shell: bash
+      run: |
+        pushd $APP_LOCATION
+        dotnet publish . -c Release -o published
+        popd
+
+    - name: Create ApiApp artifact
+      shell: bash
+      run: |
+        pushd $API_LOCATION
+        dotnet publish . -c Release -o published
+        popd
+
+    - name: Upload WebApp artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ inputs.app_name }}_app
+        path: ${{ inputs.app_name }}/published
+
+    - name: Upload ApiApp artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ inputs.api_name }}_app
+        path: ${{ inputs.api_name }}/published
