@@ -69,28 +69,28 @@ jobs:
     - name: Perform CodeQL analysis
       uses: github/codeql-action/analyze@v1
 
-    - name: Create WebApp artifact
-      shell: bash
-      run: |
-        pushd $APP_LOCATION
-        dotnet publish . -c Release -o published
-        popd
+    # - name: Create WebApp artifact
+    #   shell: bash
+    #   run: |
+    #     pushd $APP_LOCATION
+    #     dotnet publish . -c Release -o published
+    #     popd
 
-    - name: Create ApiApp artifact
-      shell: bash
-      run: |
-        pushd $API_LOCATION
-        dotnet publish . -c Release -o published
-        popd
+    # - name: Create ApiApp artifact
+    #   shell: bash
+    #   run: |
+    #     pushd $API_LOCATION
+    #     dotnet publish . -c Release -o published
+    #     popd
 
-    - name: Upload WebApp artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ inputs.app_name }}_app
-        path: src/${{ inputs.app_name }}/published
+    # - name: Upload WebApp artifact
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: ${{ inputs.app_name }}_app
+    #     path: src/${{ inputs.app_name }}/published
 
-    - name: Upload ApiApp artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ inputs.api_name }}_app
-        path: src/${{ inputs.api_name }}/published
+    # - name: Upload ApiApp artifact
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: ${{ inputs.api_name }}_app
+    #     path: src/${{ inputs.api_name }}/published
