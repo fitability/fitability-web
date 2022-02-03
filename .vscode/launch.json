@@ -1,0 +1,55 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to .NET Functions",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:azureFunctions.pickProcess}"
+    },
+    {
+      "name": "Launch and Debug Standalone Blazor WebAssembly App",
+      "type": "blazorwasm",
+      "request": "launch",
+      "preLaunchTask": "build (blazor)",
+      "cwd": "${workspaceFolder}/src/Fitability.WebApp"
+    },
+    {
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+      "name": ".NET Core Launch (console) - ApiApp.Tests",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build (ApiApp.Tests)",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/test/Fitability.ApiApp.Tests/bin/Debug/net6.0/Fitability.ApiApp.Tests.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/test/Fitability.ApiApp.Tests",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "internalConsole",
+      "stopAtEntry": false
+    },
+    {
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+      "name": ".NET Core Launch (console) - WebApp.Tests",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build (WebApp.Tests)",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/test/Fitability.WebApp.Tests/bin/Debug/net6.0/Fitability.WebApp.Tests.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/test/Fitability.WebApp.Tests",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "internalConsole",
+      "stopAtEntry": false
+    },
+    {
+      "name": ".NET Core Attach",
+      "type": "coreclr",
+      "request": "attach"
+    }
+  ]
+}

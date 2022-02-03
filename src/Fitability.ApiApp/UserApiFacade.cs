@@ -33,11 +33,11 @@ namespace Fitability.ApiApp
             this._logger = log.ThrowIfNullOrDefault();
         }
 
-        [FunctionName(nameof(UserApiFacade.Me))]
+        [FunctionName(nameof(UserApiFacade.MeAsync))]
         [OpenApiOperation(operationId: "users.me", tags: new[] { "me" })]
         [OpenApiParameter(name: "name", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Name** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: ContentTypes.PlainText, bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> Me(
+        public async Task<IActionResult> MeAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, HttpVerbs.GET, Route = "me")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");

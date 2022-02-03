@@ -1,0 +1,190 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "clean (functions)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "clean",
+        "${workspaceFolder}/src/Fitability.ApiApp/Fitability.ApiApp.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build (functions)",
+      "type": "process",
+      "dependsOn": "clean (functions)",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/src/Fitability.ApiApp/Fitability.ApiApp.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "clean release (functions)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "clean",
+        "${workspaceFolder}/src/Fitability.ApiApp/Fitability.ApiApp.csproj",
+        "--configuration",
+        "Release",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish (functions)",
+      "type": "process",
+      "dependsOn": "clean release (functions)",
+      "command": "dotnet",
+      "args": [
+        "publish",
+        "${workspaceFolder}/src/Fitability.ApiApp/Fitability.ApiApp.csproj",
+        "--configuration",
+        "Release",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "type": "func",
+      "dependsOn": "build (functions)",
+      "command": "host start",
+      "options": {
+        "cwd": "${workspaceFolder}/src/Fitability.ApiApp/bin/Debug/net6.0"
+      },
+      "isBackground": true,
+      "problemMatcher": "$func-dotnet-watch"
+    },
+    {
+      "label": "clean (blazor)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "clean",
+        "${workspaceFolder}/src/Fitability.WebApp/Fitability.WebApp.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build (blazor)",
+      "type": "process",
+      "dependsOn": "clean (blazor)",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/src/Fitability.WebApp/Fitability.WebApp.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "clean release (blazor)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "clean",
+        "${workspaceFolder}/src/Fitability.WebApp/Fitability.WebApp.csproj",
+        "--configuration",
+        "Release",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish (blazor)",
+      "type": "process",
+      "dependsOn": "clean release (blazor)",
+      "command": "dotnet",
+      "args": [
+        "publish",
+        "${workspaceFolder}/src/Fitability.WebApp/Fitability.WebApp.csproj",
+        "--configuration",
+        "Release",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "watch",
+      "type": "process",
+      "dependsOn": "build (blazor)",
+      "command": "dotnet",
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "${workspaceFolder}/src/Fitability.WebApp/Fitability.WebApp.csproj",
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "clean (ApiApp.Tests)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "clean",
+        "${workspaceFolder}/test/Fitability.ApiApp.Tests/Fitability.ApiApp.Tests.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build (ApiApp.Tests)",
+      "type": "process",
+      "dependsOn": "clean (ApiApp.Tests)",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/test/Fitability.ApiApp.Tests/Fitability.ApiApp.Tests.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "clean (WebApp.Tests)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "clean",
+        "${workspaceFolder}/test/Fitability.WebApp.Tests/Fitability.WebApp.Tests.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build (WebApp.Tests)",
+      "type": "process",
+      "dependsOn": "clean (WebApp.Tests)",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/test/Fitability.WebApp.Tests/Fitability.WebApp.Tests.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}
