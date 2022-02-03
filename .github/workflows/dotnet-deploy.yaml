@@ -39,6 +39,13 @@ jobs:
         echo "API_LOCATION=${{ github.workspace }}/${{ inputs.api_name }}/published" >> $GITHUB_ENV
         echo "OUTPUT_LOCATION=${{ inputs.www_location }}" >> $GITHUB_ENV
 
+    # - name: Check environment variables
+    #   shell: bash
+    #   run: |
+    #     echo $APP_LOCATION
+    #     echo $API_LOCATION
+    #     echo $OUTPUT_LOCATION
+
     - name: Download WebApp artifact
       uses: actions/download-artifact@v2
       with:
@@ -50,6 +57,18 @@ jobs:
       with:
         name: ${{ inputs.api_name }}_app
         path: ${{ env.API_LOCATION }}
+
+    - name: Check WebApp artifact
+      shell: bash
+      run: |
+        cd ${{ env.APP_LOCATION }}
+        ls -al
+
+    - name: Check ApiApp artifact
+      shell: bash
+      run: |
+        cd ${{ env.API_LOCATION }}
+        ls -al
 
     - name: Deploy Static Web App 
       uses: Azure/static-web-apps-deploy@v1

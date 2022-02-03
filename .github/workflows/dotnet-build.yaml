@@ -30,6 +30,12 @@ jobs:
         echo "APP_LOCATION=${{ github.workspace }}/src/${{ inputs.app_name }}" >> $GITHUB_ENV
         echo "API_LOCATION=${{ github.workspace }}/src/${{ inputs.api_name }}" >> $GITHUB_ENV
 
+    # - name: Check environment variables
+    #   shell: bash
+    #   run: |
+    #     echo $APP_LOCATION
+    #     echo $API_LOCATION
+
     - name: Checkout the repo
       uses: actions/checkout@v2
       with:
