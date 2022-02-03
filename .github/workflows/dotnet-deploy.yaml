@@ -35,15 +35,21 @@ jobs:
     - name: Set environment variables
       shell: bash
       run: |
-        echo "APP_LOCATION=${{ github.workspace }}/${{ inputs.app_name }}" >> $GITHUB_ENV
-        echo "API_LOCATION=${{ github.workspace }}/${{ inputs.api_name }}" >> $GITHUB_ENV
+        echo "APP_LOCATION=${{ github.workspace }}/${{ inputs.app_name }}/published" >> $GITHUB_ENV
+        echo "API_LOCATION=${{ github.workspace }}/${{ inputs.api_name }}/published" >> $GITHUB_ENV
         echo "OUTPUT_LOCATION=${{ inputs.www_location }}" >> $GITHUB_ENV
 
     - name: Download WebApp artifact
       uses: actions/download-artifact@v2
       with:
         name: ${{ inputs.app_name }}_app
-        path: ${{ env.API_APP_PATH }}
+        path: ${{ env.APP_LOCATION }}
+
+    - name: Download ApiApp artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: ${{ inputs.api_name }}_app
+        path: ${{ env.API_LOCATION }}
 
     - name: Deploy Static Web App 
       uses: Azure/static-web-apps-deploy@v1
