@@ -35,9 +35,9 @@ jobs:
     - name: Set environment variables
       shell: bash
       run: |
-        echo "APP_LOCATION=${{ github.workspace }}/${{ inputs.app_name }}/published" >> $GITHUB_ENV
-        echo "API_LOCATION=${{ github.workspace }}/${{ inputs.api_name }}/published" >> $GITHUB_ENV
-        echo "OUTPUT_LOCATION=${{ inputs.www_location }}" >> $GITHUB_ENV
+        echo "APP_LOCATION=${{ inputs.app_name }}/published" >> $GITHUB_ENV
+        echo "API_LOCATION=${{ inputs.api_name }}/published" >> $GITHUB_ENV
+        echo "OUTPUT_LOCATION=${{ inputs.app_name }}/published/${{ inputs.www_location }}" >> $GITHUB_ENV
 
     # - name: Check environment variables
     #   shell: bash
@@ -61,12 +61,19 @@ jobs:
     - name: Check WebApp artifact
       shell: bash
       run: |
+        echo "APP_LOCATION"
         cd ${{ env.APP_LOCATION }}
+        ls -al
+
+        echo "OUTPUT_LOCATION"
+        cd ${{ github.workspace }}
+        cd ${{ env.OUTPUT_LOCATION }}
         ls -al
 
     - name: Check ApiApp artifact
       shell: bash
       run: |
+        echo "API_LOCATION"
         cd ${{ env.API_LOCATION }}
         ls -al
 
@@ -79,7 +86,7 @@ jobs:
         skip_app_build: true
         ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
         # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-        app_location: "$APP_LOCATION/$OUTPUT_LOCATION" # App source code path
+        app_location: $OUTPUT_LOCATION # App source code path
         api_location: $API_LOCATION # Api source code path - optional
         output_location: '' # Built app content directory - optional
         ###### End of Repository/Build Configurations ######
