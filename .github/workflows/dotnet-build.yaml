@@ -27,12 +27,12 @@ jobs:
     - name: Check github context
       shell: pwsh
       run: |
-        ${{ github }} | ConvertTo-Json
+        $(${{ github }}) | ConvertTo-Json
 
     - name: Check job context
       shell: pwsh
       run: |
-        ${{ job }} | ConvertTo-Json
+        $(${{ job }}) | ConvertTo-Json
 
     - name: Set environment variables
       shell: bash
