@@ -101,24 +101,32 @@ jobs:
     - name: Upload WebApp artifact to Azure Blob Storage
       shell: bash
       run: |
+        pushd src/${{ inputs.app_name }}/published
+
         filename="${{ inputs.app_name }}_${{ github.run_id }}.zip"
-        zip -r $filename src/${{ inputs.app_name }}/published
+        zip -r $filename *
 
         az storage blob upload \
           --connection-string "${{ secrets.st_connectionstring }}" \
           --container-name webapp \
           --file ./$filename --name $filename --content-type "application/zip"
 
+        popd
+
     - name: Upload ApiApp artifact to Azure Blob Storage
       shell: bash
       run: |
+        pushd src/${{ inputs.api_name }}/published
+
         filename="${{ inputs.api_name }}_${{ github.run_id }}.zip"
-        zip -r $filename src/${{ inputs.api_name }}/published
+        zip -r $filename *
 
         az storage blob upload \
           --connection-string "${{ secrets.st_connectionstring }}" \
           --container-name apiapp \
           --file ./$filename --name $filename --content-type "application/zip"
+
+        popd
 
     # - name: Get artifacts download URL
     #   shell: pwsh
