@@ -27,13 +27,8 @@ jobs:
     - name: Check github context
       shell: bash
       run: |
-        echo ${{ github }}
-
-
-    - name: Check job context
-      shell: bash
-      run: |
-        echo ${{ job }}
+        echo "run_id: ${{ github.run_id }}"
+        echo "run_number: ${{ github.run_number }}"
 
     - name: Set environment variables
       shell: bash
