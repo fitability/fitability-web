@@ -125,7 +125,7 @@ jobs:
 
         az rest --method post `
         --url $url `
-        --headers $($headers | ConvertTo-Json -Compress) `
+        --headers $($headers | ConvertTo-Json -Compress | ConvertTo-Json) `
         --body $($payload | ConvertTo-Json -Compress) `
         --verbose
 
