@@ -38,7 +38,8 @@ jobs:
     with:
       job_name: 'Web App'
       environment: 'dev'
-      location_code: 'wus2'
+      location_code: 'krc'
+      location_code_app: 'wus2'
       app_name: 'Fitability.WebApp'
       api_name: 'Fitability.ApiApp'
       www_location: 'wwwroot'

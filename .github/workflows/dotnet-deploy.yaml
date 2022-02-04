@@ -12,6 +12,9 @@ on:
       location_code:
         type: string
         required: true
+      location_code_app:
+        type: string
+        required: true
       app_name:
         type: string
         required: true
@@ -45,7 +48,7 @@ jobs:
       shell: bash
       run: |
         echo "RESOURCE_GROUP_NAME=rg-${{ secrets.resource_name }}-${{ inputs.environment }}-${{ inputs.location_code }}" >> $GITHUB_ENV
-        echo "STATIC_APP_NAME=sttapp-${{ secrets.resource_name }}-web-${{ inputs.environment }}-${{ inputs.location_code }}" >> $GITHUB_ENV
+        echo "STATIC_APP_NAME=sttapp-${{ secrets.resource_name }}-web-${{ inputs.environment }}-${{ inputs.location_code_app }}" >> $GITHUB_ENV
         echo "APP_LOCATION=src/${{ inputs.app_name }}" >> $GITHUB_ENV
         echo "API_LOCATION=src/${{ inputs.api_name }}" >> $GITHUB_ENV
         echo "OUTPUT_LOCATION=${{ inputs.www_location }}" >> $GITHUB_ENV
