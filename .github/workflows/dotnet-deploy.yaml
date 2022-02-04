@@ -106,8 +106,15 @@ jobs:
     - name: Deploy Static Web App
       shell: bash
       run: |
-        headers="{ \"Content-Type\": \"application/json\" }"
-        payload="{ \"properties\": { \"provider\": \"fitability\", \"functionLanguage\": \"csharp\", \"deploymentTitle\": \"Deploy ASWA\", \"appZipUrl\": \"${{ steps.artifact.outputs.webapp_url}}\", \"apiZipUrl\": \"${{ steps.artifact.outputs.apiapp_url}}\" } }"
+        headers='{ "Content-Type": "application/json" }'
+        payload='{ "properties": { "provider": "fitability", "functionLanguage": "csharp", "deploymentTitle": "Deploy ASWA", "appZipUrl": "${{ steps.artifact.outputs.webapp_url}}", "apiZipUrl": "${{ steps.artifact.outputs.apiapp_url}}" } }'
+
+        # headers=$(jq -c . <<JSON
+        # {
+        #   "Content-Type": "application/json"
+        # }
+        # JSON
+        # )
 
         # payload=$(jq -c . <<JSON
         # {
@@ -122,15 +129,14 @@ jobs:
         # JSON
         # )
 
-        echo $payload
-
         subscriptionId=$(az account show --query "id" -o tsv)
-        url="/subscriptions/$subscriptionId/resourceGroups/${{ env.RESOURCE_GROUP_NAME }}/providers/Microsoft.Web/staticSites/${{ env.STATIC_APP_NAME }}/zipdeploy\?api-version=2021-02-01"
+        url="/subscriptions/$subscriptionId/resourceGroups/${{ env.RESOURCE_GROUP_NAME }}/providers/Microsoft.Web/staticSites/${{ env.STATIC_APP_NAME }}/zipdeploy?api-version=2021-02-01"
 
         az rest --method post \
         --url $url \
         --headers $headers \
-        --body $payload
+        --body $payload \
+        --verbose
 
     # - name: Check environment variables
     #   shell: bash
