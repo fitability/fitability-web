@@ -102,7 +102,7 @@ jobs:
       shell: bash
       run: |
         filename="${{ inputs.app_name }}_${{ github.run_id }}.zip"
-        zip -r -j $filename src/${{ inputs.app_name }}/published
+        zip -r $filename src/${{ inputs.app_name }}/published
 
         az storage blob upload \
           --connection-string "${{ secrets.st_connectionstring }}" \
@@ -113,7 +113,7 @@ jobs:
       shell: bash
       run: |
         filename="${{ inputs.api_name }}_${{ github.run_id }}.zip"
-        zip -r -j $filename src/${{ inputs.api_name }}/published
+        zip -r $filename src/${{ inputs.api_name }}/published
 
         az storage blob upload \
           --connection-string "${{ secrets.st_connectionstring }}" \
