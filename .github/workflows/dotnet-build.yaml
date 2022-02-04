@@ -97,6 +97,8 @@ jobs:
 
     - name: Get artifacts download URL
       shell: pwsh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         $url = "/repos/fitability/fitability-web/actions/runs/${{ github.run_id }}/artifacts"
         $artifacts = $(gh api -X GET $url) | ConvertFrom-Json
