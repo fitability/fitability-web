@@ -101,11 +101,14 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         $url = "/repos/fitability/fitability-web/actions/runs/${{ github.run_id }}/artifacts"
-        $artifacts = $(gh api -X GET $url) | ConvertFrom-Json
-        $webapp = $artifacts.artifacts | Where-Object { $_.name -eq "${{ inputs.app_name }}" }
-        $apiapp = $artifacts.artifacts | Where-Object { $_.name -eq "${{ inputs.api_name }}" }
+        $result = $(gh api -X GET $url) | ConvertFrom-Json
 
-        $artifacts = @{ webapp = $webapp; apiapp = $apiapp }
+        $result
+
+        $webapp = $result.artifacts | Where-Object { $_.name -eq "${{ inputs.app_name }}" }
+        $apiapp = $result.artifacts | Where-Object { $_.name -eq "${{ inputs.api_name }}" }
+
+        $artifacts = @{ webapp = $($webapp.archive_download_url); apiapp = $($apiapp.archive_download_url) }
         $artifacts | ConvertTo-Json
         $artifacts | ConvertTo-Json | Out-File ${{ github.workspace }}/artifacts.txt -Encoding utf8 -Force
 
