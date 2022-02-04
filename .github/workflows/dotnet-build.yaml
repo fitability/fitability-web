@@ -27,12 +27,12 @@ jobs:
     - name: Check github context
       shell: bash
       run: |
-        echo "${{ github }}"
+        echo ${{ github }}
 
     - name: Check job context
       shell: bash
       run: |
-        echo "${{ job }}"
+        echo ${{ job }}
 
     - name: Set environment variables
       shell: bash
