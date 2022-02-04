@@ -24,12 +24,6 @@ jobs:
     environment: ${{ inputs.environment }}
 
     steps:
-    - name: Check github context
-      shell: bash
-      run: |
-        echo "run_id: ${{ github.run_id }}"
-        echo "run_number: ${{ github.run_number }}"
-
     - name: Set environment variables
       shell: bash
       run: |
@@ -100,6 +94,28 @@ jobs:
       with:
         name: ${{ inputs.api_name }}
         path: src/${{ inputs.api_name }}/published
+
+    - name: Upload WebApp artifact to Azure Blob Storage
+      shell: bash
+      run: |
+        filename=$("${{ inputs.app_name }}_${{ github.run_id }}.zip")
+        zip -r -j $filename src/${{ inputs.app_name }}/published
+
+        az storage blob upload \
+          --connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
+          --container-name webapp \
+          --file ./$filename --name $filename --content-type "application/zip"
+
+    - name: Upload ApiApp artifact to Azure Blob Storage
+      shell: bash
+      run: |
+        filename=$("${{ inputs.api_name }}_${{ github.run_id }}.zip")
+        zip -r -j $filename src/${{ inputs.api_name }}/published
+
+        az storage blob upload \
+          --connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
+          --container-name apiapp \
+          --file ./$filename --name $filename --content-type "application/zip"
 
     # - name: Get artifacts download URL
     #   shell: pwsh
