@@ -1,4 +1,5 @@
 param name string
+param suffix string = ''
 param location string = resourceGroup().location
 param locationCode string = 'wus2'
 
@@ -13,27 +14,27 @@ param env string = 'dev'
     'Free'
     'Standard'
 ])
-param staticAppSkuName string = 'Free'
+param staticWebAppSkuName string = 'Free'
 
-param staticAppAllowConfigFileUpdates bool = true
+param staticWebAppAllowConfigFileUpdates bool = true
 
 @allowed([
     'Disabled'
     'Enabled'
 ])
-param staticAppStagingEnvironmentPolicy string = 'Enabled'
+param staticWebAppStagingEnvironmentPolicy string = 'Enabled'
 
 var metadata = {
-    longName: '{0}-${name}-${env}-${locationCode}'
-    shortName: '{0}${name}${env}${locationCode}'
+    longName: '{0}-${name}{1}-${env}-${locationCode}'
+    shortName: '{0}${name}{1}${env}${locationCode}'
 }
 
 var staticApp = {
-    name: format(metadata.longName, 'sttapp')
+    name: suffix == '' ? format(metadata.longName, 'sttapp', '') : format(metadata.longName, 'sttapp', '-${suffix}')
     location: location
-    skuName: staticAppSkuName
-    allowConfigFileUpdates: staticAppAllowConfigFileUpdates
-    stagingEnvironmentPolicy: staticAppStagingEnvironmentPolicy
+    skuName: staticWebAppSkuName
+    allowConfigFileUpdates: staticWebAppAllowConfigFileUpdates
+    stagingEnvironmentPolicy: staticWebAppStagingEnvironmentPolicy
 }
 
 resource sttapp 'Microsoft.Web/staticSites@2021-02-01' = {
