@@ -106,7 +106,8 @@ jobs:
     - name: Deploy Static Web App
       shell: bash
       run: |
-        payload='{ "properties": { "provider": "fitability", "functionLanguage": "csharp", "deploymentTitle": "Deploy ASWA", "appZipUrl": "${{ steps.artifact.outputs.webapp_url}}", "apiZipUrl": "${{ steps.artifact.outputs.apiapp_url}}" } }'
+        headers="{ \"Content-Type\": \"application/json\" }"
+        payload="{ \"properties\": { \"provider\": \"fitability\", \"functionLanguage\": \"csharp\", \"deploymentTitle\": \"Deploy ASWA\", \"appZipUrl\": \"${{ steps.artifact.outputs.webapp_url}}\", \"apiZipUrl\": \"${{ steps.artifact.outputs.apiapp_url}}\" } }"
 
         # payload=$(jq -c . <<JSON
         # {
@@ -128,7 +129,7 @@ jobs:
 
         az rest --method post \
         --url $url \
-        --headers "{\"Content-Type\":\"application/json\"}" `
+        --headers $headers \
         --body $payload
 
     # - name: Check environment variables
