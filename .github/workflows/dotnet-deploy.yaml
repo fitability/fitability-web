@@ -105,8 +105,23 @@ jobs:
     - name: Deploy Static Web App
       shell: bash
       run: |
-        payload=`{"properties":{"provider":"fitability","functionLanguage":"csharp","deploymentTitle":"Deploy ASWA","appZipUrl":"${{ steps.artifact.outputs.webapp_url}}","apiZipUrl":"${{ steps.artifact.outputs.apiapp_url}}"}}`
-        
+        # payload='{"properties":{"provider":"fitability","functionLanguage":"csharp","deploymentTitle":"Deploy ASWA","appZipUrl":"${{ steps.artifact.outputs.webapp_url}}","apiZipUrl":"${{ steps.artifact.outputs.apiapp_url}}"}}'
+
+        payload=$(jq -c . <<JSON
+        {
+          "properties": {
+            "provider": "fitability",
+            "functionLanguage": "csharp",
+            "deploymentTitle": "Deploy ASWA",
+            "appZipUrl": "${{ steps.artifact.outputs.webapp_url}}",
+            "apiZipUrl": "${{ steps.artifact.outputs.apiapp_url}}"
+          }
+        }
+        JSON
+        )
+
+        echo $payload
+
         subscriptionId=$(az account show --query "id" -o tsv)
         url="/subscriptions/$subscriptionId/resourceGroups/${{ env.RESOURCE_GROUP_NAME }}/providers/Microsoft.Web/staticSites/${{ env.STATIC_APP_NAME }}/zipdeploy\?api-version=2021-02-01"
 
