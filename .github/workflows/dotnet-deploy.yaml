@@ -9,6 +9,9 @@ on:
       environment:
         type: string
         required: true
+      location_code:
+        type: string
+        required: true
       app_name:
         type: string
         required: true
@@ -19,11 +22,15 @@ on:
         type: string
         required: true
     secrets:
-      gh_token:
+      azure_credentials:
         required: true
       st_connectionstring:
         required: true
+      gh_token:
+        required: true
       aswa_token:
+        required: true
+      resource_name:
         required: true
 
 jobs:
@@ -37,9 +44,73 @@ jobs:
     - name: Set environment variables
       shell: bash
       run: |
+        echo "RESOURCE_GROUP_NAME=rg-${{ secrets.resource_name }}-${{ inputs.environment }}-${{ inputs.location_code }}" >> $GITHUB_ENV
+        echo "STATIC_APP_NAME=sttapp-${{ secrets.resource_name }}-web-${{ inputs.environment }}-${{ inputs.location_code }}" >> $GITHUB_ENV
         echo "APP_LOCATION=src/${{ inputs.app_name }}" >> $GITHUB_ENV
         echo "API_LOCATION=src/${{ inputs.api_name }}" >> $GITHUB_ENV
         echo "OUTPUT_LOCATION=${{ inputs.www_location }}" >> $GITHUB_ENV
+
+    - name: Check environment variables
+      shell: bash
+      run: |
+        echo $RESOURCE_GROUP_NAME
+        echo $STATIC_APP_NAME
+        echo $APP_LOCATION
+        echo $API_LOCATION
+        echo $OUTPUT_LOCATION
+
+    - name: Login to Azure
+      uses: Azure/login@v1
+      with:
+        creds: ${{ secrets.azure_credentials }}
+
+    - name: Generate SAS token
+      id: sasToken
+      shell: bash
+      run: |
+        expiry=`date -u -d "10 minutes" '+%Y-%m-%dT%H:%MZ'`
+
+        token=$(az storage account generate-sas \
+          --connection-string "${{ secrets.st_connectionstring }}" \
+          --services b --resource-types o --permissions r \
+          --expiry $expiry \
+          --https-only \
+          --output tsv)
+
+        echo "::set-output name=value::$token"
+
+    - name: Get artifact URLs
+      id: artifact
+      shell: bash
+      run: |
+        $webapp=`${{ inputs.app_name }}_${{ github.run_id }}.zip`
+        $apiapp=`${{ inputs.api_name }}_${{ github.run_id }}.zip`
+
+        webapp_url=$(az storage blob url \
+          --connection-string "${{ secrets.st_connectionstring }}" \
+          --container-name webapp \
+          --name $webapp -o tsv)
+
+        apiapp_url=$(az storage blob url \
+          --connection-string "${{ secrets.st_connectionstring }}" \
+          --container-name apiapp \
+          --name $apiapp -o tsv)
+
+        echo "::set-output webapp_url=value::$webapp_url"
+        echo "::set-output apiapp_url=value::$apiapp_url"
+
+    - name: Deploy Static Web App
+      shell: bash
+      run: |
+        payload=`{"properties":{"provider":"fitability","functionLanguage":"csharp","deploymentTitle":"Deploy ASWA","appZipUrl":"${{ steps.artifact.outputs.webapp_url}}\?${{ steps.sasToken.outputs.value }}","apiZipUrl":"${{ steps.artifact.outputs.apiapp_url}}\?${{ steps.sasToken.outputs.value }}"}}`
+        
+        subscriptionId=$(az account show --query "id" -o tsv)
+        url=`/subscriptions/$subscriptionId/resourceGroups/${{ env.RESOURCE_GROUP_NAME }}/providers/Microsoft.Web/staticSites/${{ env.STATIC_APP_NAME }}/zipdeploy?api-version=2021-02-01`
+
+        az rest --method post \
+        --url $url \
+        --headers "{\"Content-Type\":\"application/json\"}" `
+        --body $payload
 
     # - name: Check environment variables
     #   shell: bash
@@ -79,16 +150,16 @@ jobs:
     #     cd ${{ env.API_LOCATION }}
     #     ls -al
 
-    - name: Deploy Static Web App 
-      uses: Azure/static-web-apps-deploy@v1
-      with:
-        azure_static_web_apps_api_token: ${{ secrets.aswa_token }}
-        repo_token: ${{ secrets.gh_token }} # Used for Github integrations (i.e. PR comments)
-        action: upload
-        # skip_app_build: true
-        ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-        # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-        app_location: $APP_LOCATION # App source code path
-        api_location: $API_LOCATION # Api source code path - optional
-        output_location: $OUTPUT_LOCATION # Built app content directory - optional
-        ###### End of Repository/Build Configurations ######
+    # - name: Deploy Static Web App 
+    #   uses: Azure/static-web-apps-deploy@v1
+    #   with:
+    #     azure_static_web_apps_api_token: ${{ secrets.aswa_token }}
+    #     repo_token: ${{ secrets.gh_token }} # Used for Github integrations (i.e. PR comments)
+    #     action: upload
+    #     # skip_app_build: true
+    #     ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
+    #     # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
+    #     app_location: $APP_LOCATION # App source code path
+    #     api_location: $API_LOCATION # Api source code path - optional
+    #     output_location: $OUTPUT_LOCATION # Built app content directory - optional
+    #     ###### End of Repository/Build Configurations ######
