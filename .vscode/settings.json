@@ -1,9 +1,10 @@
 {
   "azureFunctions.deploySubpath": "src/Fitability.ApiApp/bin/Release/net6.0/publish",
+  "azureFunctions.projectSubpath": "src\\Fitability.ApiApp",
   "azureFunctions.projectLanguage": "C#",
   "azureFunctions.projectRuntime": "~4",
-  "debug.internalConsoleOptions": "neverOpen",
   "azureFunctions.preDeployTask": "publish (functions)",
+  "debug.internalConsoleOptions": "neverOpen",
   "markdownlint.config": {
     "MD028": false,
     "MD025": {

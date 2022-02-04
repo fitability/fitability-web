@@ -69,28 +69,46 @@ jobs:
     - name: Perform CodeQL analysis
       uses: github/codeql-action/analyze@v1
 
-    # - name: Create WebApp artifact
-    #   shell: bash
-    #   run: |
-    #     pushd $APP_LOCATION
-    #     dotnet publish . -c Release -o published
-    #     popd
+    - name: Create WebApp artifact
+      shell: bash
+      run: |
+        pushd $APP_LOCATION
+        dotnet publish . -c Release -o published
+        popd
 
-    # - name: Create ApiApp artifact
-    #   shell: bash
-    #   run: |
-    #     pushd $API_LOCATION
-    #     dotnet publish . -c Release -o published
-    #     popd
+    - name: Create ApiApp artifact
+      shell: bash
+      run: |
+        pushd $API_LOCATION
+        dotnet publish . -c Release -o published
+        popd
 
-    # - name: Upload WebApp artifact
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: ${{ inputs.app_name }}_app
-    #     path: src/${{ inputs.app_name }}/published
+    - name: Upload WebApp artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ inputs.app_name }}
+        path: src/${{ inputs.app_name }}/published
 
-    # - name: Upload ApiApp artifact
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: ${{ inputs.api_name }}_app
-    #     path: src/${{ inputs.api_name }}/published
+    - name: Upload ApiApp artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ inputs.api_name }}
+        path: src/${{ inputs.api_name }}/published
+
+    - name: Get artifacts download URL
+      shell: pwsh
+      run: |
+        $url = "/repos/fitability/fitability-web/actions/runs/${{ github.run_id }}/artifacts"
+        $artifacts = $(gh api -X GET $url) | ConvertFrom-Json
+        $webapp = $artifacts.artifacts | Where-Object { $_.name -eq "${{ inputs.app_name }}" }
+        $apiapp = $artifacts.artifacts | Where-Object { $_.name -eq "${{ inputs.api_name }}" }
+
+        $artifacts = @{ webapp = $webapp; apiapp = $apiapp }
+        $artifacts | ConvertTo-Json
+        $artifacts | ConvertTo-Json | Out-File ${{ github.workspace }}/artifacts.txt -Encoding utf8 -Force
+
+    - name: Upload artifacts URL
+      uses: actions/upload-artifact@v2
+      with:
+        name: artfiacts
+        path: ${{ github.workspace }}/artifacts.txt
