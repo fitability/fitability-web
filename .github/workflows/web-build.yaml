@@ -25,7 +25,7 @@ jobs:
   call_dotnet_build:
     uses: fitability/fitability-web/.github/workflows/dotnet-build.yaml@main
     with:
-      job_name: 'Web App'
+      job_name: 'Web App Build'
       environment: 'dev'
       app_name: 'Fitability.WebApp'
       api_name: 'Fitability.ApiApp'
@@ -36,7 +36,7 @@ jobs:
     uses: fitability/fitability-web/.github/workflows/dotnet-deploy.yaml@main
     needs: call_dotnet_build
     with:
-      job_name: 'Web App'
+      job_name: 'Web App to DEV'
       environment: 'dev'
       location_code: 'krc'
       location_code_app: 'wus2'

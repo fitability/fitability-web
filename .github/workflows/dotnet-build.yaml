@@ -72,61 +72,61 @@ jobs:
     - name: Perform CodeQL analysis
       uses: github/codeql-action/analyze@v1
 
-    - name: Create WebApp artifact
-      shell: bash
-      run: |
-        pushd $APP_LOCATION
-        dotnet publish . -c Release -o published
-        popd
+    # - name: Create WebApp artifact
+    #   shell: bash
+    #   run: |
+    #     pushd $APP_LOCATION
+    #     dotnet publish . -c Release -o published
+    #     popd
 
-    - name: Create ApiApp artifact
-      shell: bash
-      run: |
-        pushd $API_LOCATION
-        dotnet publish . -c Release -o published
-        popd
+    # - name: Create ApiApp artifact
+    #   shell: bash
+    #   run: |
+    #     pushd $API_LOCATION
+    #     dotnet publish . -c Release -o published
+    #     popd
 
-    - name: Upload WebApp artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ inputs.app_name }}
-        path: src/${{ inputs.app_name }}/published
+    # - name: Upload WebApp artifact
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: ${{ inputs.app_name }}
+    #     path: src/${{ inputs.app_name }}/published
 
-    - name: Upload ApiApp artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ inputs.api_name }}
-        path: src/${{ inputs.api_name }}/published
+    # - name: Upload ApiApp artifact
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: ${{ inputs.api_name }}
+    #     path: src/${{ inputs.api_name }}/published
 
-    - name: Upload WebApp artifact to Azure Blob Storage
-      shell: bash
-      run: |
-        pushd src/${{ inputs.app_name }}/published
+    # - name: Upload WebApp artifact to Azure Blob Storage
+    #   shell: bash
+    #   run: |
+    #     pushd src/${{ inputs.app_name }}/published
 
-        filename="${{ inputs.app_name }}_${{ github.run_id }}.zip"
-        zip -r $filename *
+    #     filename="${{ inputs.app_name }}_${{ github.run_id }}.zip"
+    #     zip -r $filename *
 
-        az storage blob upload \
-          --connection-string "${{ secrets.st_connectionstring }}" \
-          --container-name webapp \
-          --file ./$filename --name $filename --content-type "application/zip"
+    #     az storage blob upload \
+    #       --connection-string "${{ secrets.st_connectionstring }}" \
+    #       --container-name webapp \
+    #       --file ./$filename --name $filename --content-type "application/zip"
 
-        popd
+    #     popd
 
-    - name: Upload ApiApp artifact to Azure Blob Storage
-      shell: bash
-      run: |
-        pushd src/${{ inputs.api_name }}/published
+    # - name: Upload ApiApp artifact to Azure Blob Storage
+    #   shell: bash
+    #   run: |
+    #     pushd src/${{ inputs.api_name }}/published
 
-        filename="${{ inputs.api_name }}_${{ github.run_id }}.zip"
-        zip -r $filename *
+    #     filename="${{ inputs.api_name }}_${{ github.run_id }}.zip"
+    #     zip -r $filename *
 
-        az storage blob upload \
-          --connection-string "${{ secrets.st_connectionstring }}" \
-          --container-name apiapp \
-          --file ./$filename --name $filename --content-type "application/zip"
+    #     az storage blob upload \
+    #       --connection-string "${{ secrets.st_connectionstring }}" \
+    #       --container-name apiapp \
+    #       --file ./$filename --name $filename --content-type "application/zip"
 
-        popd
+    #     popd
 
     # - name: Get artifacts download URL
     #   shell: pwsh

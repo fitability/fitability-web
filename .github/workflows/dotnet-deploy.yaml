@@ -53,137 +53,94 @@ jobs:
         echo "API_LOCATION=src/${{ inputs.api_name }}" >> $GITHUB_ENV
         echo "OUTPUT_LOCATION=${{ inputs.www_location }}" >> $GITHUB_ENV
 
-    - name: Check environment variables
-      shell: bash
-      run: |
-        echo $RESOURCE_GROUP_NAME
-        echo $STATIC_APP_NAME
-        echo $APP_LOCATION
-        echo $API_LOCATION
-        echo $OUTPUT_LOCATION
-
-    - name: Login to Azure
-      uses: Azure/login@v1
-      with:
-        creds: ${{ secrets.azure_credentials }}
-
-    - name: Generate SAS token
-      id: sasToken
-      shell: bash
-      run: |
-        expiry=`date -u -d "10 minutes" '+%Y-%m-%dT%H:%MZ'`
-
-        token=$(az storage account generate-sas \
-          --connection-string "${{ secrets.st_connectionstring }}" \
-          --services b --resource-types o --permissions r \
-          --expiry $expiry \
-          --https-only \
-          --output tsv)
-
-        echo "::add-mask::$token"
-        echo "::set-output name=value::$token"
-
-    - name: Get artifact URLs
-      id: artifact
-      shell: bash
-      run: |
-        webapp="${{ inputs.app_name }}_${{ github.run_id }}.zip"
-        apiapp="${{ inputs.api_name }}_${{ github.run_id }}.zip"
-
-        webapp_url=$(az storage blob url \
-          --connection-string "${{ secrets.st_connectionstring }}" \
-          --container-name webapp \
-          --name $webapp -o tsv)
-
-        apiapp_url=$(az storage blob url \
-          --connection-string "${{ secrets.st_connectionstring }}" \
-          --container-name apiapp \
-          --name $apiapp -o tsv)
-
-        webapp_url="$webapp_url?${{ steps.sasToken.outputs.value }}"
-        apiapp_url="$apiapp_url?${{ steps.sasToken.outputs.value }}"
-
-        echo "::set-output name=webapp_url::$webapp_url"
-        echo "::set-output name=apiapp_url::$apiapp_url"
-
-    - name: Deploy Static Web App
-      shell: pwsh
-      run: |
-        $headers = @{
-          "Content-Type" = "application/json";
-        }
-
-        $payload = @{
-          properties = @{
-            provider = "fitability";
-            functionLanguage = "csharp";
-            deploymentTitle = "Deploy ASWA";
-            appZipUrl = "${{ steps.artifact.outputs.webapp_url}}";
-            apiZipUrl = "${{ steps.artifact.outputs.apiapp_url}}";
-          };
-        }
-
-        $subscriptionId = $(az account show --query "id" -o tsv)
-        $url = "/subscriptions/$subscriptionId/resourceGroups/${{ env.RESOURCE_GROUP_NAME }}/providers/Microsoft.Web/staticSites/${{ env.STATIC_APP_NAME }}/zipdeploy?api-version=2021-02-01"
-
-        az rest --method post `
-        --url $url `
-        --headers $($headers | ConvertTo-Json -Compress | ConvertTo-Json) `
-        --body $($payload | ConvertTo-Json -Compress) `
-        --verbose
-
-    # - name: Deploy Static Web App
-    #   shell: bash
-    #   run: |
-    #     # headers='{ "Content-Type": "application/json" }'
-    #     # payload='{ "properties": { "provider": "fitability", "functionLanguage": "csharp", "deploymentTitle": "Deploy ASWA", "appZipUrl": "${{ steps.artifact.outputs.webapp_url}}", "apiZipUrl": "${{ steps.artifact.outputs.apiapp_url}}" } }'
-
-    #     headers=$(jq -c . <<JSON
-    #     {
-    #       "Content-Type": "application/json"
-    #     }
-    #     JSON
-    #     )
-
-    #     payload=$(jq -c . <<JSON
-    #     {
-    #       "properties": {
-    #         "provider": "fitability",
-    #         "functionLanguage": "csharp",
-    #         "deploymentTitle": "Deploy ASWA",
-    #         "appZipUrl": "${{ steps.artifact.outputs.webapp_url}}",
-    #         "apiZipUrl": "${{ steps.artifact.outputs.apiapp_url}}"
-    #       }
-    #     }
-    #     JSON
-    #     )
-
-    #     subscriptionId=$(az account show --query "id" -o tsv)
-    #     url="/subscriptions/$subscriptionId/resourceGroups/${{ env.RESOURCE_GROUP_NAME }}/providers/Microsoft.Web/staticSites/${{ env.STATIC_APP_NAME }}/zipdeploy?api-version=2021-02-01"
-
-    #     az rest --method post \
-    #     --url $url \
-    #     --headers $headers \
-    #     --body $payload \
-    #     --verbose
-
     # - name: Check environment variables
     #   shell: bash
     #   run: |
+    #     echo $RESOURCE_GROUP_NAME
+    #     echo $STATIC_APP_NAME
     #     echo $APP_LOCATION
     #     echo $API_LOCATION
     #     echo $OUTPUT_LOCATION
 
+    # - name: Login to Azure
+    #   uses: Azure/login@v1
+    #   with:
+    #     creds: ${{ secrets.azure_credentials }}
+
+    # - name: Generate SAS token
+    #   id: sasToken
+    #   shell: bash
+    #   run: |
+    #     expiry=`date -u -d "10 minutes" '+%Y-%m-%dT%H:%MZ'`
+
+    #     token=$(az storage account generate-sas \
+    #       --connection-string "${{ secrets.st_connectionstring }}" \
+    #       --services b --resource-types o --permissions r \
+    #       --expiry $expiry \
+    #       --https-only \
+    #       --output tsv)
+
+    #     echo "::add-mask::$token"
+    #     echo "::set-output name=value::$token"
+
+    # - name: Get artifact URLs
+    #   id: artifact
+    #   shell: bash
+    #   run: |
+    #     webapp="${{ inputs.app_name }}_${{ github.run_id }}.zip"
+    #     apiapp="${{ inputs.api_name }}_${{ github.run_id }}.zip"
+
+    #     webapp_url=$(az storage blob url \
+    #       --connection-string "${{ secrets.st_connectionstring }}" \
+    #       --container-name webapp \
+    #       --name $webapp -o tsv)
+
+    #     apiapp_url=$(az storage blob url \
+    #       --connection-string "${{ secrets.st_connectionstring }}" \
+    #       --container-name apiapp \
+    #       --name $apiapp -o tsv)
+
+    #     webapp_url="$webapp_url?${{ steps.sasToken.outputs.value }}"
+    #     apiapp_url="$apiapp_url?${{ steps.sasToken.outputs.value }}"
+
+    #     echo "::set-output name=webapp_url::$webapp_url"
+    #     echo "::set-output name=apiapp_url::$apiapp_url"
+
+    # - name: Deploy Static Web App
+    #   shell: pwsh
+    #   run: |
+    #     $headers = @{
+    #       "Content-Type" = "application/json";
+    #     }
+
+    #     $payload = @{
+    #       properties = @{
+    #         provider = "fitability";
+    #         functionLanguage = "csharp";
+    #         deploymentTitle = "Deploy ASWA";
+    #         appZipUrl = "${{ steps.artifact.outputs.webapp_url}}";
+    #         apiZipUrl = "${{ steps.artifact.outputs.apiapp_url}}";
+    #       };
+    #     }
+
+    #     $subscriptionId = $(az account show --query "id" -o tsv)
+    #     $url = "/subscriptions/$subscriptionId/resourceGroups/${{ env.RESOURCE_GROUP_NAME }}/providers/Microsoft.Web/staticSites/${{ env.STATIC_APP_NAME }}/zipdeploy?api-version=2021-02-01"
+
+    #     az rest --method post `
+    #     --url $url `
+    #     --headers $($headers | ConvertTo-Json -Compress | ConvertTo-Json) `
+    #     --body $($payload | ConvertTo-Json -Compress)
+
     # - name: Download WebApp artifact
     #   uses: actions/download-artifact@v2
     #   with:
-    #     name: ${{ inputs.app_name }}_app
+    #     name: ${{ inputs.app_name }}
     #     path: ${{ env.APP_LOCATION }}
 
     # - name: Download ApiApp artifact
     #   uses: actions/download-artifact@v2
     #   with:
-    #     name: ${{ inputs.api_name }}_app
+    #     name: ${{ inputs.api_name }}
     #     path: ${{ env.API_LOCATION }}
 
     # - name: Check WebApp artifact
@@ -205,16 +162,22 @@ jobs:
     #     cd ${{ env.API_LOCATION }}
     #     ls -al
 
-    # - name: Deploy Static Web App 
-    #   uses: Azure/static-web-apps-deploy@v1
-    #   with:
-    #     azure_static_web_apps_api_token: ${{ secrets.aswa_token }}
-    #     repo_token: ${{ secrets.gh_token }} # Used for Github integrations (i.e. PR comments)
-    #     action: upload
-    #     # skip_app_build: true
-    #     ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-    #     # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-    #     app_location: $APP_LOCATION # App source code path
-    #     api_location: $API_LOCATION # Api source code path - optional
-    #     output_location: $OUTPUT_LOCATION # Built app content directory - optional
-    #     ###### End of Repository/Build Configurations ######
+    - name: Checkout the repo
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Deploy Static Web App 
+      uses: Azure/static-web-apps-deploy@v1
+      with:
+        azure_static_web_apps_api_token: ${{ secrets.aswa_token }}
+        repo_token: ${{ secrets.gh_token }} # Used for Github integrations (i.e. PR comments)
+        action: upload
+        # skip_app_build: true
+        # skip_api_build: true
+        ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
+        # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
+        app_location: $APP_LOCATION # App source code path
+        api_location: $API_LOCATION # Api source code path - optional
+        output_location: $OUTPUT_LOCATION # Built app content directory - optional
+        ###### End of Repository/Build Configurations ######
