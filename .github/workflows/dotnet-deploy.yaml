@@ -106,20 +106,20 @@ jobs:
     - name: Deploy Static Web App
       shell: bash
       run: |
-        # payload='{"properties":{"provider":"fitability","functionLanguage":"csharp","deploymentTitle":"Deploy ASWA","appZipUrl":"${{ steps.artifact.outputs.webapp_url}}","apiZipUrl":"${{ steps.artifact.outputs.apiapp_url}}"}}'
+        payload='{ "properties": { "provider": "fitability", "functionLanguage": "csharp", "deploymentTitle": "Deploy ASWA", "appZipUrl": "${{ steps.artifact.outputs.webapp_url}}", "apiZipUrl": "${{ steps.artifact.outputs.apiapp_url}}" } }'
 
-        payload=$(jq -c . <<JSON
-        {
-          "properties": {
-            "provider": "fitability",
-            "functionLanguage": "csharp",
-            "deploymentTitle": "Deploy ASWA",
-            "appZipUrl": "${{ steps.artifact.outputs.webapp_url}}",
-            "apiZipUrl": "${{ steps.artifact.outputs.apiapp_url}}"
-          }
-        }
-        JSON
-        )
+        # payload=$(jq -c . <<JSON
+        # {
+        #   "properties": {
+        #     "provider": "fitability",
+        #     "functionLanguage": "csharp",
+        #     "deploymentTitle": "Deploy ASWA",
+        #     "appZipUrl": "${{ steps.artifact.outputs.webapp_url}}",
+        #     "apiZipUrl": "${{ steps.artifact.outputs.apiapp_url}}"
+        #   }
+        # }
+        # JSON
+        # )
 
         echo $payload
 
