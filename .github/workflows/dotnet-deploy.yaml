@@ -77,6 +77,7 @@ jobs:
           --https-only \
           --output tsv)
 
+        echo "::add-mask::$token"
         echo "::set-output name=value::$token"
 
     - name: Get artifact URLs
@@ -96,8 +97,8 @@ jobs:
           --container-name apiapp \
           --name $apiapp -o tsv)
 
-        webapp_url="$webapp_url\?${{ steps.sasToken.outputs.value }}"
-        apiapp_url="$apiapp_url\?${{ steps.sasToken.outputs.value }}"
+        webapp_url="$webapp_url?${{ steps.sasToken.outputs.value }}"
+        apiapp_url="$apiapp_url?${{ steps.sasToken.outputs.value }}"
 
         echo "::set-output name=webapp_url::$webapp_url"
         echo "::set-output name=apiapp_url::$apiapp_url"
