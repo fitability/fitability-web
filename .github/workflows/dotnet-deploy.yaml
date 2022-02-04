@@ -83,8 +83,8 @@ jobs:
       id: artifact
       shell: bash
       run: |
-        $webapp=`${{ inputs.app_name }}_${{ github.run_id }}.zip`
-        $apiapp=`${{ inputs.api_name }}_${{ github.run_id }}.zip`
+        $webapp="${{ inputs.app_name }}_${{ github.run_id }}.zip"
+        $apiapp="${{ inputs.api_name }}_${{ github.run_id }}.zip"
 
         webapp_url=$(az storage blob url \
           --connection-string "${{ secrets.st_connectionstring }}" \
@@ -105,7 +105,7 @@ jobs:
         payload=`{"properties":{"provider":"fitability","functionLanguage":"csharp","deploymentTitle":"Deploy ASWA","appZipUrl":"${{ steps.artifact.outputs.webapp_url}}\?${{ steps.sasToken.outputs.value }}","apiZipUrl":"${{ steps.artifact.outputs.apiapp_url}}\?${{ steps.sasToken.outputs.value }}"}}`
         
         subscriptionId=$(az account show --query "id" -o tsv)
-        url=`/subscriptions/$subscriptionId/resourceGroups/${{ env.RESOURCE_GROUP_NAME }}/providers/Microsoft.Web/staticSites/${{ env.STATIC_APP_NAME }}/zipdeploy?api-version=2021-02-01`
+        url="/subscriptions/$subscriptionId/resourceGroups/${{ env.RESOURCE_GROUP_NAME }}/providers/Microsoft.Web/staticSites/${{ env.STATIC_APP_NAME }}/zipdeploy\?api-version=2021-02-01"
 
         az rest --method post \
         --url $url \
