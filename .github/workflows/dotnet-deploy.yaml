@@ -32,6 +32,32 @@ jobs:
     environment: ${{ inputs.environment }}
 
     steps:
+
+    - name: Get artifacts download URL
+      shell: pwsh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $url = "/repos/fitability/fitability-web/actions/runs/${{ github.run_id }}/artifacts"
+        $result = $(gh api -X GET $url) | ConvertFrom-Json
+
+        $result
+
+        $webapp = $result.artifacts | Where-Object { $_.name -eq "${{ inputs.app_name }}" }
+        $apiapp = $result.artifacts | Where-Object { $_.name -eq "${{ inputs.api_name }}" }
+
+        $artifacts = @{ webapp = $($webapp.archive_download_url); apiapp = $($apiapp.archive_download_url) }
+        $artifacts | ConvertTo-Json
+        $artifacts | ConvertTo-Json | Out-File ${{ github.workspace }}/artifacts.txt -Encoding utf8 -Force
+
+    # - name: Upload artifacts URL
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: artfiacts
+    #     path: ${{ github.workspace }}/artifacts.txt
+
+
+
     - name: Set environment variables
       shell: bash
       run: |
