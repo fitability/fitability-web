@@ -21,6 +21,8 @@ on:
     secrets:
       gh_token:
         required: true
+      st_connectionstring:
+        required: true
       aswa_token:
         required: true
 

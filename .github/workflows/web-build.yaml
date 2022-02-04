@@ -29,6 +29,8 @@ jobs:
       environment: 'dev'
       app_name: 'Fitability.WebApp'
       api_name: 'Fitability.ApiApp'
+    secrets:
+      st_connectionstring: '${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}'
 
   call_dotnet_deploy_dev:
     uses: fitability/fitability-web/.github/workflows/dotnet-deploy.yaml@main
@@ -41,4 +43,5 @@ jobs:
       www_location: 'wwwroot'
     secrets:
       gh_token: ${{ secrets.GITHUB_TOKEN }}
+      st_connectionstring: '${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}'
       aswa_token: '${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_DEV }}'

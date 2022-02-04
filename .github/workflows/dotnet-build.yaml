@@ -15,6 +15,9 @@ on:
       api_name:
         type: string
         required: true
+    secrets:
+      st_connectionstring:
+        required: true
 
 jobs:
   build_test_analysis:
@@ -98,22 +101,22 @@ jobs:
     - name: Upload WebApp artifact to Azure Blob Storage
       shell: bash
       run: |
-        filename=$("${{ inputs.app_name }}_${{ github.run_id }}.zip")
+        filename="${{ inputs.app_name }}_${{ github.run_id }}.zip"
         zip -r -j $filename src/${{ inputs.app_name }}/published
 
         az storage blob upload \
-          --connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
+          --connection-string "${{ secrets.st_connectionstring }}" \
           --container-name webapp \
           --file ./$filename --name $filename --content-type "application/zip"
 
     - name: Upload ApiApp artifact to Azure Blob Storage
       shell: bash
       run: |
-        filename=$("${{ inputs.api_name }}_${{ github.run_id }}.zip")
+        filename="${{ inputs.api_name }}_${{ github.run_id }}.zip"
         zip -r -j $filename src/${{ inputs.api_name }}/published
 
         az storage blob upload \
-          --connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
+          --connection-string "${{ secrets.st_connectionstring }}" \
           --container-name apiapp \
           --file ./$filename --name $filename --content-type "application/zip"
 
