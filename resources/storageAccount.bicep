@@ -80,7 +80,7 @@ resource sttable 'Microsoft.Storage/storageAccounts/tableServices@2021-06-01' = 
 }
 
 resource sttabletable 'Microsoft.Storage/storageAccounts/tableServices/tables@2021-06-01' = [for table in storage.table.tables: if (length(storage.table.tables) > 0) {
-    name: '${stblob.name}/${table}'
+    name: '${sttable.name}/${table}'
 }]
 
 output id string = st.id
