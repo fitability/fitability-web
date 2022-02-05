@@ -47,7 +47,11 @@ Param(
 
     [string[]]
     [Parameter(Mandatory=$false)]
-    $StorageAccountBlobContainers = @( "webapp", "apiapp" ),
+    $StorageAccountBlobContainers = @(),
+
+    [string[]]
+    [Parameter(Mandatory=$false)]
+    $StorageAccountTables = @(),
     ### Storage Account ###
 
     ### Log Analytics ###
@@ -122,6 +126,7 @@ function Show-Usage {
             [-ProvisionStorageAccount <`$true|`$false>] ``
             [-StorageAccountSku <Storage Account SKU>] ``
             [-StorageAccountBlobContainers <Storage Account blob containers>] ``
+            [-StorageAccountTables <Storage Account tables>] ``
 
             [-ProvisionLogAnalyticsWorkspace <`$true|`$false>] ``
             [-LogAnalyticsWorkspaceSku <Log Analytics workspace SKU>] ``
@@ -158,7 +163,9 @@ function Show-Usage {
         -StorageAccountSku                Storage Account SKU.
                                           Default is 'Standard_LRS'.
         -StorageAccountBlobContainers     Storage Account blob containers array.
-                                          Default is 'webapp,apiapp'.
+                                          Default is empty array.
+        -StorageAccountTables             Storage Account tables array.
+                                          Default is empty array.
 
         -ProvisionLogAnalyticsWorkspace   To provision Log Analytics Workspace
                                           or not. Default is `$false.
@@ -227,6 +234,7 @@ $params = @{
     storageAccountToProvision = @{ value = $ProvisionStorageAccount };
     storageAccountSku = @{ value = $StorageAccountSku };
     storageAccountBlobContainers = @{ value = $StorageAccountBlobContainers };
+    storageAccountTables = @{ value = $StorageAccountTables };
 
     workspaceToProvision = @{ value = $ProvisionLogAnalyticsWorkspace };
     workspaceSku = @{ value = $LogAnalyticsWorkspaceSku };
