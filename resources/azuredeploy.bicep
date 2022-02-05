@@ -23,6 +23,10 @@ param storageAccountToProvision bool = false
     'Premium_ZRS'
 ])
 param storageAccountSku string = 'Standard_LRS'
+param storageAccountBlobContainers array = [
+    'webapp'
+    'apiapp'
+]
 
 // Log Analytics Workspace
 param workspaceToProvision bool = false
@@ -85,6 +89,7 @@ module st './storageAccount.bicep' = if (storageAccountToProvision) {
         locationCode: locationCodeResolved
         env: env
         storageAccountSku: storageAccountSku
+        storageAccountBlobContainers: storageAccountBlobContainers
     }
 }
 
@@ -122,6 +127,8 @@ module sttapp './staticWebApp.bicep' = if (staticWebAppToProvision) {
         location: locationResolved
         locationCode: locationCodeResolved
         env: env
+        appInsightsId: appins.outputs.id
+        appInsightsInstrumentationKey: appins.outputs.instrumentationKey
         staticWebAppSkuName: staticWebAppSkuName
         staticWebAppAllowConfigFileUpdates: staticWebAppAllowConfigFileUpdates
         staticWebAppStagingEnvironmentPolicy: staticWebAppStagingEnvironmentPolicy

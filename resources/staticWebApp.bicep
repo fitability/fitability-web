@@ -10,6 +10,9 @@ param locationCode string = 'wus2'
 ])
 param env string = 'dev'
 
+param appInsightsId string
+param appInsightsInstrumentationKey string
+
 @allowed([
     'Free'
     'Standard'
@@ -29,6 +32,10 @@ var metadata = {
     shortName: '{0}${name}{1}${env}${locationCode}'
 }
 
+var appInsights = {
+    id: appInsightsId
+    instrumentationKey: appInsightsInstrumentationKey
+}
 var staticApp = {
     name: suffix == '' ? format(metadata.longName, 'sttapp', '') : format(metadata.longName, 'sttapp', '-${suffix}')
     location: location
@@ -40,6 +47,10 @@ var staticApp = {
 resource sttapp 'Microsoft.Web/staticSites@2021-02-01' = {
     name: staticApp.name
     location: staticApp.location
+    tags: {
+        'hidden-link: /app-insights-resource-id': appInsights.id
+        'hidden-link: /app-insights-instrmentation-key': appInsights.instrumentationKey
+    }
     sku: {
         name: staticApp.skuName
     }

@@ -44,6 +44,10 @@ Param(
     [Parameter(Mandatory=$false)]
     [ValidateSet("Standard_GRS", "Standard_LRS", "Standard_ZRS", "Standard_GZRS", "Standard_RAGRS", "Standard_RAGZRS", "Premium_LRS", "Premium_ZRS")]
     $StorageAccountSku = "Standard_LRS",
+
+    [string[]]
+    [Parameter(Mandatory=$false)]
+    $StorageAccountBlobContainers = @( "webapp", "apiapp" ),
     ### Storage Account ###
 
     ### Log Analytics ###
@@ -117,6 +121,7 @@ function Show-Usage {
 
             [-ProvisionStorageAccount <`$true|`$false>] ``
             [-StorageAccountSku <Storage Account SKU>] ``
+            [-StorageAccountBlobContainers <Storage Account blob containers>] ``
 
             [-ProvisionLogAnalyticsWorkspace <`$true|`$false>] ``
             [-LogAnalyticsWorkspaceSku <Log Analytics workspace SKU>] ``
@@ -152,6 +157,8 @@ function Show-Usage {
                                           Default is `$false.
         -StorageAccountSku                Storage Account SKU.
                                           Default is 'Standard_LRS'.
+        -StorageAccountBlobContainers     Storage Account blob containers array.
+                                          Default is 'webapp,apiapp'.
 
         -ProvisionLogAnalyticsWorkspace   To provision Log Analytics Workspace
                                           or not. Default is `$false.
@@ -219,6 +226,7 @@ $params = @{
 
     storageAccountToProvision = @{ value = $ProvisionStorageAccount };
     storageAccountSku = @{ value = $StorageAccountSku };
+    storageAccountBlobContainers = @{ value = $StorageAccountBlobContainers };
 
     workspaceToProvision = @{ value = $ProvisionLogAnalyticsWorkspace };
     workspaceSku = @{ value = $LogAnalyticsWorkspaceSku };
